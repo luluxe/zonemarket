@@ -1,0 +1,6 @@
+[web]
+34.107.105.75
+
+[web:vars]
+production=true
+user=zonemarket

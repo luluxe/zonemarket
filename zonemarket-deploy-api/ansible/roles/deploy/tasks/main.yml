@@ -1,0 +1,94 @@
+---
+- name: DEPLOY | Install deployer
+  shell: |
+    curl -LO https://deployer.org/deployer.phar
+    mv deployer.phar /usr/local/bin/dep
+    chmod +x /usr/local/bin/dep
+  args:
+    creates: /usr/local/bin/dep
+- name: DEPLOY | Create shared directory if absent
+  file:
+    path: "/var/www/{{ site_domain }}/shared"
+    state: directory
+    owner: "{{ user }}"
+    group: "www-data"
+    mode: 0755
+- name: DEPLOY | Create app directory if absent
+  file:
+    path: "/var/www/{{ site_domain }}/shared/app"
+    state: directory
+    owner: "{{ user }}"
+    group: "www-data"
+    mode: 0755
+- name: DEPLOY | Create config directory if absent
+  file:
+    path: "/var/www/{{ site_domain }}/shared/app/config"
+    state: directory
+    owner: "{{ user }}"
+    group: "www-data"
+    mode: 0755
+- name: DEPLOY | Upload parameters.yml file if absent
+  template:
+    src: parameters.j2
+    dest: "/var/www/{{ site_domain }}/shared/app/config/parameters.yml"
+    force: yes
+  become: true
+  become_user: "{{ user }}"
+- name: DEPLOY | Upload firebase service account file if absent
+  template:
+    src: "{{ firebase_credentials_src }}"
+    dest: "/var/www/{{ site_domain }}/shared/{{ firebase_credentials }}"
+    force: no
+  become: true
+  become_user: "{{ user }}"
+- name: DEPLOY | Upload depoyer script
+  template:
+    src: deployer.j2
+    dest: "/tmp/deploy.php"
+    force: yes
+  become: true
+  become_user: "{{ user }}"
+- meta: flush_handlers
+- name: DEPLOY | Deploy application from git branch
+  shell: cd /tmp && /usr/local/bin/dep deploy local
+  when: git_tag is not defined
+- name: DEPLOY | Deploy application from git tag
+  shell: cd /tmp && /usr/local/bin/dep deploy local --tag={{ git_tag }}
+  when: git_tag is defined
+- name: DEPLOY | Change permissions of app folder
+  file:
+    path: "/var/www/{{ site_domain }}"
+    state: directory
+    recurse: true
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0775
+- name: DEPLOY | Add default permissions for app directory to user
+  acl:
+    path: "/var/www/{{ site_domain }}/shared/app"
+    etype: user
+    entity: "{{ user }}"
+    permissions: rwx
+    default: true
+    recursive: true
+    state: present
+- name: DEPLOY | Add permissions for app directory to user
+  acl:
+    path: "/var/www/{{ site_domain }}/shared/app"
+    etype: user
+    entity: "{{ user }}"
+    permissions: rwx
+    recursive: true
+    state: present
+- name: DEPLOY | Add permissions for app directory to web server
+  acl:
+    path: "/var/www/{{ site_domain }}/shared/app"
+    etype: user
+    entity: www-data
+    permissions: rwx
+    recursive: true
+    state: present
+- name: DEPLOY | Remove deployer script
+  file:
+    path: "/tmp/deploy.php"
+    state: absent

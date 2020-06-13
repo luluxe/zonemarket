@@ -1,0 +1,49 @@
+---
+- name: Server provisioning
+  hosts: all
+  become: true
+  tasks:
+    - name: "Create user {{ user }}"
+      user:
+        name: "{{ user }}"
+        shell: /bin/bash
+        groups: www-data
+        append: yes
+    - name: Update and upgrade repo
+      apt:
+        update_cache: yes
+        upgrade: dist
+    - name: Install system tools
+      include_role:
+          name: tools
+    - name: Install and configure firewall
+      include_role:
+        name: firewall
+    - name: Install MySQL Server
+      include_role:
+        name: mysql
+      when: with_mysql_server
+    - name: Install MySQL Client
+      include_role:
+        name: mysql_client
+      when: not with_mysql_server
+    - name: Install Apache2 Webserver
+      include_role:
+        name: apache2
+    - name: Install PHP
+      include_role:
+        name: php
+    - name: Install Redis Server
+      include_role:
+        name: redis
+      when: with_redis_server
+    - name: Install Redis Client
+      include_role:
+        name: redis_client
+      when: not with_redis_server
+    - name: Installl Certbot
+      include_role:
+        name: certbot
+    - name: Deploy Symfony application
+      include_role:
+        name: deploy

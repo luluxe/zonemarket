@@ -1,0 +1,8 @@
+project_id = "my-project-id"
+region = "europe-west1"
+credentials = ".gcloud/service-account.json"
+instance_name = "web"
+machine_type = "g1-small"
+zone = "europe-west1-b"
+domain_name = "my-domain.io"
+image_family = "image-name-1553769781"

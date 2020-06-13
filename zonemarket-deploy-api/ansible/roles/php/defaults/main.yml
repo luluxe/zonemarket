@@ -1,0 +1,8 @@
+---
+php_version: 7.3
+php_post_max_size: 72M
+php_file_uploads: On
+php_upload_max_filesize: 64M
+php_memory_limit: 512M
+php_max_execution_time: 30
+php_max_input_time: 30

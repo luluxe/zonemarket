@@ -1,0 +1,13 @@
+---
+- name: REDIS | Install redis
+  apt:
+    name: redis-server
+    update_cache: yes
+    state: present
+- name: REDIS | Define password
+  lineinfile:
+    dest: "/etc/redis/redis.conf"
+    regexp: "requirepass"
+    line: "requirepass {{ redis_password }}"
+  when: redis_password is defined
+  notify: redis restart

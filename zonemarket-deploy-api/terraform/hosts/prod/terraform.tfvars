@@ -1,0 +1,6 @@
+project_id = "zonemarket-prod"
+region = "europe-west1"
+instance_name = "zonemarket-prod"
+machine_type = "n1-standard-1"
+zone = "europe-west1-b"
+domain_name = "zonemarket.frenchsky.ovh"

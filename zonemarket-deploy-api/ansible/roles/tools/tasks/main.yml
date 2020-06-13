@@ -1,0 +1,47 @@
+---
+- name: SERVER TOOLS | Install basic tools
+  apt:
+    name:
+      - acl
+      - build-essential
+      - curl
+      - fail2ban
+      - git
+      - jpegoptim
+      - libz-dev
+      - memcached
+      - optipng
+      - pngquant
+      - software-properties-common
+      - supervisor
+      - unzip
+      - zip
+    state: present
+- name: SERVER TOOLS | Create personal sudoer file
+  template:
+    src: "sudoer.j2"
+    dest: "/etc/sudoers.d/{{ user }}"
+    mode: 0440
+    validate: "/usr/sbin/visudo -cf %s"
+- name: SERVER TOOLS | Install Stackdriver monitoring agent
+  shell: |
+    cd /tmp
+    curl -sSO https://dl.google.com/cloudagents/install-monitoring-agent.sh
+    sudo bash install-monitoring-agent.sh
+  args:
+    creates: /etc/default/stackdriver-agent
+  when: stackdriver_agent
+- name: SERVER TOOLS | Install Stackdriver logging agent
+  shell: |
+    cd /tmp
+    curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh
+    sudo bash install-logging-agent.sh
+  args:
+    creates: /usr/sbin/google-fluentd
+  when: stackdriver_agent
+- name: SERVER TOOLS | Create Fluentd config for Laravel
+  template:
+    src: "laravel-fluentd.conf.j2"
+    dest: "/etc/google-fluentd/config.d/laravel.conf"
+  notify: fluentd restart
+  when: stackdriver_agent

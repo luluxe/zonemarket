@@ -1,0 +1,28 @@
+# All variables are mandatory except 'redis_password'.
+# 
+# USE VAULT FOR ENCRYPTING PASSWORD AND NEVER COMMIT
+# PLAIN PASSWORDS TO GIT.
+
+php_version: 7.3
+site_domain: zonemarket.frenchsky.ovh
+mysql_root_password:
+mysql_db: zonemarket
+mysql_user: zonemarket
+mysql_password:
+redis_host:
+redis_password:
+redis_port:
+
+apache_server_limit: 256
+ssl_config: true
+hsts: false
+hsts_max_age: 15768000
+
+php_pm_max_children: 80
+php_pm_start_servers: 20
+php_pm_min_spare_servers: 5
+php_pm_max_spare_servers: 30
+
+stackdriver_agent: false
+with_mysql_server: false
+with_redis_server: false

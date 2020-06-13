@@ -1,0 +1,25 @@
+---
+- name: FIREWALL | Install ufw
+  apt:
+    name:
+      - ufw
+    state: present
+- name: FIREWALL | Define policy
+  ufw:
+    direction: "{{ item.direction }}"
+    policy: "{{ item.policy }}"
+  with_items:
+    - {direction: incoming, policy: deny}
+    - {direction: outgoing, policy: allow}
+- name: FIREWALL | Limit SSH
+  ufw:
+    rule: limit
+    port: ssh
+- name: FIREWALL | Rules
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  with_items:
+    - http
+    - https
+    - git

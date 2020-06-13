@@ -1,0 +1,7 @@
+---
+- name: MySQL | Install MySQL
+  apt:
+    name: 
+      - mysql-client
+      - python-mysqldb
+    state: present

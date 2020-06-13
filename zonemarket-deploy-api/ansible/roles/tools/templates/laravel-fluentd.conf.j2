@@ -1,0 +1,17 @@
+<source>
+    @type tail
+    # Format 'none' indicates the log is unstructured (text).
+    format multiline
+    format_firstline /^\[([\w]+[^\]]*)\][\s][\w]+[\.][\w]+[\:][\s]/
+    format1 /^\[(?<time>[^\]]*)\](\s)(?<env>[\w]+)(\.)(?<severity>[\w]+)(\:)(\s)(?<message>.*)/
+    time_format %Y-%m-%d %H:%M:%S 
+    # The path of the log file.
+    path /var/www/{{ site_domain }}/shared/storage/logs/laravel-%Y-%m-%d.log
+    # The path of the position file that records where in the log file
+    # we have processed already. This is useful when the agent
+    # restarts.
+    pos_file /var/lib/google-fluentd/pos/test-laravel-log.pos
+    read_from_head true
+    # The log tag for this log input.
+    tag laravel-log
+</source>

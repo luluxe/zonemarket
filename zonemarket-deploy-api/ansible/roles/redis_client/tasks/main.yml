@@ -1,0 +1,6 @@
+---
+- name: REDIS | Install redis
+  apt:
+    name: redis-tools
+    update_cache: yes
+    state: present

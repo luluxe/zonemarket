@@ -1,0 +1,8 @@
+---
+- name: CERTBOT | Add certbot/certbot repository
+  apt_repository:
+    repo: "ppa:certbot/certbot"
+- name: CERTBOT | Install certbot
+  apt:
+    name: python-certbot-apache 
+    update_cache: yes

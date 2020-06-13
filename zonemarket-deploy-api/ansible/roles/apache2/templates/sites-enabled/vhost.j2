@@ -1,0 +1,19 @@
+<VirtualHost *:80>
+	ServerName {{ site_domain }}
+	ServerAlias www.{{ site_domain }}
+	DocumentRoot /var/www/{{ site_domain }}/current/web
+
+	<Directory /var/www/{{ site_domain }}/current/web>
+	        Options -Indexes -MultiViews +FollowSymLinks
+	        AllowOverride All
+	        Require all granted
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	RewriteEngine on
+	#RewriteCond %{SERVER_NAME} =www.{{ site_domain }} [OR]
+	#RewriteCond %{SERVER_NAME} ={{ site_domain }}
+	#RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>

@@ -1,0 +1,92 @@
+---
+- name: "Apache2 | Add ondrej/ppa repository"
+  apt_repository:
+    repo: "ppa:ondrej/php"
+- name: Apache2 | Install
+  apt:
+    name: apache2
+    state: present
+- name: Apache2 | Enable mod-rewrite
+  apache2_module:
+    name: rewrite
+    state: present
+  notify: apache2 restart
+- name: Apache2 | Enable mod-headers
+  apache2_module:
+    name: headers
+    state: present
+  notify: apache2 restart
+- name: Apache2 | Enable mod-deflate
+  apache2_module:
+    name: deflate
+    state: present
+  notify: apache2 restart
+- name: Apache2 | Enable mod-filter
+  apache2_module:
+    name: filter
+    state: present
+  notify: apache2 restart
+- name: Apache2 | Enable mod-proxy_fcgi
+  apache2_module:
+    state: present
+    name: proxy_fcgi
+- name: Apache2 | Enable mod-ssl
+  apache2_module:
+    state: present
+    name: ssl
+- name: Apache2 | Disable mod-php
+  apache2_module:
+    state: absent
+    name: php{{ php_version }}
+- name: Apache2 | Disable mpm-prefork
+  apache2_module:
+    state: absent
+    name: mpm_prefork
+    ignore_configcheck: true
+- name: Apache2 | Enable mpm-event
+  apache2_module:
+    state: present
+    name: mpm_event
+    ignore_configcheck: true
+- name: Apache2 | Disable security conf
+  file:
+    path: "/etc/apache2/conf-enabled/security.conf"
+    state: absent
+  notify: apache2 restart
+- name: Apache2 | Disable default vhost
+  file:
+    path: "/etc/apache2/sites-enabled/000-default.conf"
+    state: absent
+  notify: apache2 restart
+- name: Apache2 | Delete default vhost
+  file:
+    path: "/etc/apache2/sites-available/000-default.conf"
+    state: absent
+- name: Apache2 | Delete html web directory
+  file:
+    path: "/var/www/html"
+    state: absent
+- name: Apache2 | Generate SSL DH param
+  shell: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+  args:
+    creates: /etc/ssl/certs/dhparam.pem
+- name: Apache2 | Add custom configuration file
+  template:
+    src: "confs/custom.conf.j2"
+    dest: "/etc/apache2/conf-enabled/custom.conf"
+- name: Apache2 | Add php-fpm configuration
+  template:
+    src: "confs/php-fpm.conf.j2"
+    dest: "/etc/apache2/conf-enabled/php{{ php_version }}-fpm.conf"
+- name: "Apache2 | Create {{ site_domain }} web directory"
+  file:
+    path: "/var/www/{{ site_domain }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "www-data"
+    mode: 0755
+- name: Apache2 | Create application vhost
+  template:
+    src: "sites-enabled/vhost.j2"
+    dest: "/etc/apache2/sites-enabled/{{ site_domain }}.conf"
+  notify: apache2 restart

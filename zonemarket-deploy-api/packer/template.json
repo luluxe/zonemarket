@@ -1,0 +1,47 @@
+{
+	"builders": [
+		{
+			"type": "googlecompute",
+			"project_id": "{{user `project_id`}}",
+			"machine_type": "{{user `machine_type`}}",
+			"source_image_family": "{{user `source_image_family`}}",
+			"region": "{{user `region`}}",
+			"zone": "{{user `zone`}}",
+			"image_description": "image disk for instance template",
+			"image_name": "{{user `project_id`}}-{{timestamp}}",
+			"disk_size": "{{ user `disk_size`}}",
+			"disk_type": "{{ user `disk_type`}}",
+			"ssh_username": "{{ user `ssh_username`}}",
+			"account_file": "{{ user `service_account_json`}}"
+		}
+	],
+	"provisioners": [
+		{
+			"type": "shell",
+			"inline": [
+				"sleep 10",
+				"sudo apt -qq update",
+				"sudo apt install -y python"
+			]
+		},
+		{
+			"type": "ansible",
+			"playbook_file": "{{user `playbook_ansible`}}",
+			"extra_arguments": [
+				"--vault-password-file={{user `vault_password`}}"
+			],
+			"inventory_directory": "{{user `inventory_directory`}}",
+			"groups": [
+				"web"
+			],
+			"host_alias": "web",
+			"user": "{{ user `ssh_username`}}"
+		}
+	],
+	"post-processors": [
+		{
+			"type": "manifest",
+			"output": "./.build/{{user `environment`}}/manifest.json"
+		}
+	]
+}

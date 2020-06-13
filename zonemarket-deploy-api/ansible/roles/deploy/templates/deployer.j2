@@ -1,0 +1,37 @@
+<?php
+
+namespace Deployer;
+
+require 'recipe/laravel.php';
+
+set('application', 'ZoneMarket');
+set('http_user', 'www-data');
+
+// Project repository
+set('repository', 'https://{{ git_username }}:{{ git_password }}@{{ git_url }}');
+
+// [Optional] Allocate tty for git clone. Default value is false.
+set('git_tty', false);
+
+set('git_recursive', false);
+
+// Shared files/dirs between deploys
+add('shared_files', [
+    'firebase_application_credentials.json',
+]);
+add('shared_dirs', []);
+
+// Writable dirs by web server
+add('writable_dirs', []);
+
+// Hosts
+
+localhost('local')
+    ->user('{{ user }}')
+    ->set('branch', '{{ git_branch }}')
+    ->set('deploy_path', '/var/www/{{ site_domain }}');
+
+// Tasks
+
+// [Optional] if deploy fails automatically unlock.
+after('deploy:failed', 'deploy:unlock');

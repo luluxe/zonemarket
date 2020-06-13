@@ -1,0 +1,3 @@
+credentials = ".gcloud/service-account.json"
+bucket  = "my-deployement-files"
+prefix  = "terraform_state"
