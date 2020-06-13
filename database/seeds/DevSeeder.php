@@ -8,6 +8,8 @@ use App\Models\Promotion;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
 use App\Models\User;
+use App\Models\Visitor;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class DevSeeder extends Seeder
@@ -30,9 +32,29 @@ class DevSeeder extends Seeder
             return;
         }
 
+        $this->command->info('Generate Users');
         $this->users();
+
+
+        $this->command->info('Fix transactions');
         $this->fixTransactions();
+
+        $this->command->info('Generate Promotions');
         $this->promotions();
+
+        $this->command->info('Generate Visitors');
+        $this->visitors();
+    }
+
+    public function visitors() {
+        $date = Carbon::now()->subMonth();
+        while($date < Carbon::now()) {
+            factory(Visitor::class)->create([
+                'created_at' => $date->toString(),
+                'updated_at' => $date->toString(),
+            ]);
+            $date->addHour();
+        }
     }
 
     /**
@@ -50,6 +72,8 @@ class DevSeeder extends Seeder
                 // With fake transaction product
                 $transaction->products()->saveMany(factory(TransactionProduct::class, rand(1, 20))->create([
                     'transaction_id' => $transaction->id,
+                    'updated_at' => $transaction->updated_at,
+                    'created_at' => $transaction->created_at,
                 ])->each(function ($product) {
 
                     // With fake product comment

@@ -172,11 +172,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Dropbox\dev\www\zonemarket\public\img" />
       <recent name="C:\Dropbox\dev\www\zonemarket\database\seeds" />
       <recent name="C:\Dropbox\dev\www\zonemarket\database\seeds\Dev" />
       <recent name="C:\Dropbox\dev\www\zonemarket\app\Http\Resources\Models" />
       <recent name="C:\Dropbox\dev\www\zonemarket\app\Http\Requests\User" />
-      <recent name="C:\Dropbox\dev\www\zonemarket\app\Http\Resources\User" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -214,7 +214,9 @@
       <workItem from="1591880692645" duration="11484000" />
       <workItem from="1591892640111" duration="5566000" />
       <workItem from="1591955185356" duration="7347000" />
-      <workItem from="1591971356060" duration="2134000" />
+      <workItem from="1591971356060" duration="8054000" />
+      <workItem from="1591998188561" duration="4301000" />
+      <workItem from="1592050519476" duration="9889000" />
     </task>
     <servers />
   </component>
@@ -226,7 +228,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

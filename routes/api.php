@@ -34,8 +34,9 @@ Route::prefix('v1')->namespace('V1')->group(function () {
         });
 
         Route::apiResource('categories', 'CategoryController')->only(['index', 'show']);
+        Route::get('products/recommendation', 'ProductController@recommendation');
         Route::apiResource('products', 'ProductController')->only(['index', 'show']);
-        Route::apiResource('transactions', 'TransactionController')->only(['index', 'show']);
+        Route::apiResource('transactions', 'TransactionController')->only(['index', 'show', 'store', 'destroy']);
         Route::apiResource('product-comments', 'ProductCommentController')->only(['index', 'show', 'store', 'destroy']);
     });
 });

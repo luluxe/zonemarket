@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
@@ -57,6 +58,10 @@ class Product extends Resource
                 ->sortable(),
 
             Number::make('Prix', 'price')
+                ->step(0.01)
+                ->sortable(),
+
+            Boolean::make('Stock remplis', 'have_stock')
                 ->sortable(),
 
             HasMany::make('Commentaire Produits', 'comments', 'App\Nova\ProductComment'),
